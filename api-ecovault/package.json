@@ -6,11 +6,10 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "services:up:dev": "dotenv -e .env/.env.dev -- docker-compose -f ./infra/docker/dev/docker-compose.dev.yml up -d && dotenv -e .env/.env.dev -- node ./infra/scripts/dependency-config.js",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
-    "start:dev": "nest start --watch",
+    "start:dev": "concurrently \"npm run docker:up\" \"npm run migrate:v1\" \"nest start --watch\"",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
@@ -19,20 +18,20 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "typeorm:sync": "dotenv -e .env/.env.dev -- ts-node src/v1/infrastructure/persistence/typeorm/migration/migration.ts"
+    "docker:up": "docker compose -f infra/docker/docker-compose.yml --env-file infra/env/.env.dev up -d",
+    "docker:down": "docker compose -f infra/docker/docker-compose.yml --env-file infra/env/.env.dev down",
+    "migrate:v1": "ts-node src/v1/infrastructure/database/migrate.ts",
+    "destroy:v1": "ts-node src/v1/infrastructure/database/drop-tables.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
-    "@nestjs/swagger": "^11.0.6",
-    "axios": "^1.8.3",
-    "env-var": "^7.5.0",
-    "mysql2": "^3.13.0",
+    "dotenv": "^16.5.0",
+    "mysql2": "^3.14.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
-    "typeorm": "^0.3.21",
-    "uuid": "^11.1.0"
+    "typeorm": "^0.3.22"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
@@ -46,6 +45,7 @@
     "@types/jest": "^29.5.14",
     "@types/node": "^22.10.7",
     "@types/supertest": "^6.0.2",
+    "concurrently": "^9.1.2",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.2",
@@ -59,9 +59,7 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.3",
-    "typescript-eslint": "^8.20.0",
-    "dotenv": "^16.0.1",
-    "dotenv-cli": "^5.1.0"
+    "typescript-eslint": "^8.20.0"
   },
   "jest": {
     "moduleFileExtensions": [

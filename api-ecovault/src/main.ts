@@ -1,10 +1,11 @@
-import HttpServerApplication from './v1/application/server/http-server-application';
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
 
-(async (): Promise<void> => {
-    await runApplication();
-})();
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  const PORT = process.env.PORT ?? 3000;
 
-async function runApplication(): Promise<void> {
-    const serverApplication = HttpServerApplication.new();
-    await serverApplication.run();
+  await app.listen(PORT);
+  console.log(`Server started: http://localhost:${PORT}`);
 }
+bootstrap();
