@@ -204,16 +204,4 @@ CREATE TABLE relatorios (
    WHERE d.usuario_id = 1;
    ```
 
----
-
-## **Como Contribuir**
-
-1. Faça um fork do repositório.
-2. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`).
-3. Commit suas mudanças (`git commit -m 'Adicionando nova feature'`).
-4. Push para a branch (`git push origin feature/nova-feature`).
-5. Abra um Pull Request.
-
----
-
 Este README.md cobre todos os aspectos essenciais do **EcoVault**. Para dúvidas ou sugestões, entre em contato com a equipe de desenvolvimento. 😊
